@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}{{ content.title }}{% endblock %}
+{% block nav %}{% include "panel/_nav.html" %}{% endblock %}
+{% block content %}
+<p><a href="/panel">&larr; Back</a></p>
+<h1>{{ content.title }} <span class="muted">({{ content.type.value }})</span></h1>
+<div class="card">
+  <h2>Links</h2>
+  <p>Watch: <code>{{ BASE_URL }}/watch/{{ content.slug }}</code></p>
+  <p>Embed: <code>{{ BASE_URL }}/embed/{{ content.slug }}</code></p>
+</div>
+<div class="card">
+  <h2>Video sources</h2>
+  <table>
+    <tr><th>Language</th><th>Quality</th><th>Size</th><th>File name</th></tr>
+    {% for s in sources %}
+    <tr><td>{{ s.language }}</td><td>{{ s.quality }}</td>
+        <td>{{ (s.file_size / 1048576) | round(1) }} MB</td><td>{{ s.file_name or "-" }}</td></tr>
+    {% else %}<tr><td colspan="4" class="muted">No sources. Upload via the bot.</td></tr>{% endfor %}
+  </table>
+</div>
+{% if children %}
+<div class="card">
+  <h2>Sub-content</h2>
+  <table>
+    <tr><th>Title</th><th>Type</th></tr>
+    {% for c in children %}
+    <tr><td><a href="/panel/content/{{ c.id }}">{{ c.title }}</a></td><td>{{ c.type.value }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endif %}
+{% endblock %}

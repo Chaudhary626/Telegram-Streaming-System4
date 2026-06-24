@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ data.title }}</title>
+  <link rel="stylesheet" href="/static/player.css">
+  {% if not embed %}
+  <style>body{margin:0;background:#0f1220;color:#e6e9f2;font-family:system-ui,Segoe UI,Roboto,sans-serif}
+    .page{max-width:980px;margin:0 auto;padding:24px}
+    h1{font-size:20px}</style>
+  {% endif %}
+</head>
+<body class="{{ 'embed-body' if embed else '' }}">
+  {% if not embed %}<div class="page"><h1>{{ data.title }}</h1>{% endif %}
+
+  <div id="tsplayer" class="player-shell {{ 'embed' if embed else '' }}">
+    {% if data.has_sources %}
+    <div class="video-wrap">
+      <video id="video" controls playsinline preload="metadata"
+             {% if data.poster %}poster="{{ data.poster }}"{% endif %}></video>
+    </div>
+    <div class="controls">
+      <span class="title">{{ data.title }}</span>
+      <span><label for="langSel">Audio</label>
+        <select id="langSel" aria-label="Audio language"></select></span>
+      <span><label for="qualSel">Quality</label>
+        <select id="qualSel" aria-label="Quality"></select></span>
+    </div>
+    {% else %}
+    <div class="empty">No video sources available for this content yet.</div>
+    {% endif %}
+  </div>
+
+  {% if not embed %}</div>{% endif %}
+
+  <script>
+    window.__PLAYER_DATA__ = {
+      title: {{ data.title | tojson }},
+      lang_list: {{ data.lang_list | tojson }},
+      quality_by_lang: {{ data.quality_by_lang | tojson }},
+      languages: {{ data.languages | tojson }}
+    };
+  </script>
+  <script src="/static/player.js"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Users{% endblock %}
+{% block nav %}{% include "admin/_nav.html" %}{% endblock %}
+{% block content %}
+<h1>Users</h1>
+<div class="card">
+  <h2>Create subadmin</h2>
+  <form method="post" action="{{ base }}/users/create" class="row">
+    <div style="flex:1"><label>Username</label><input name="username" required></div>
+    <div style="flex:1"><label>Password</label><input name="password" type="password" required></div>
+    <button class="btn" type="submit">Create</button>
+  </form>
+</div>
+<div class="card">
+  <table>
+    <tr><th>ID</th><th>Username</th><th>Role</th><th>Active</th><th>Plan</th><th>Expires</th><th>Actions</th></tr>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.id }}</td><td>{{ u.username }}</td><td>{{ u.role.value }}</td>
+      <td>{{ "Yes" if u.is_active else "No" }}</td>
+      <td>{{ u.plan_id or "-" }}</td>
+      <td>{{ u.plan_expires_at.strftime("%Y-%m-%d") if u.plan_expires_at else "-" }}</td>
+      <td>
+        <form class="inline" method="post" action="{{ base }}/users/{{ u.id }}/active">
+          <input type="hidden" name="active" value="{{ 0 if u.is_active else 1 }}">
+          <button class="btn ghost" type="submit">{{ "Disable" if u.is_active else "Enable" }}</button>
+        </form>
+        <form class="inline" method="post" action="{{ base }}/users/{{ u.id }}/plan">
+          <select name="plan_id" style="width:auto;display:inline">
+            <option value="">No plan</option>
+            {% for p in plans %}<option value="{{ p.id }}">{{ p.name }}</option>{% endfor %}
+          </select>
+          <input name="extend_days" placeholder="days" style="width:70px;display:inline">
+          <button class="btn" type="submit">Set</button>
+        </form>
+        <form class="inline" method="post" action="{{ base }}/users/{{ u.id }}/password">
+          <input name="password" type="password" placeholder="new password" style="width:120px;display:inline">
+          <button class="btn ghost" type="submit">Set password</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

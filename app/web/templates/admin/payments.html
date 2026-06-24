@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Payments{% endblock %}
+{% block nav %}{% include "admin/_nav.html" %}{% endblock %}
+{% block content %}
+<h1>Payment Requests</h1>
+<div class="card">
+  <h2>Pending review</h2>
+  <table>
+    <tr><th>ID</th><th>User</th><th>Plan</th><th>Amount</th><th>Txn Ref</th><th>Action</th></tr>
+    {% for r in pending %}
+    <tr>
+      <td>{{ r.id }}</td><td>{{ r.user.username }}</td><td>{{ r.plan_id }}</td>
+      <td>{{ r.amount }}</td><td>{{ r.transaction_ref or "-" }}</td>
+      <td>
+        <form class="inline" method="post" action="{{ base }}/payments/{{ r.id }}/approve">
+          <button class="btn ok" type="submit">Approve</button></form>
+        <form class="inline" method="post" action="{{ base }}/payments/{{ r.id }}/reject">
+          <input name="note" placeholder="reason" style="width:130px;display:inline">
+          <button class="btn bad" type="submit">Reject</button></form>
+      </td>
+    </tr>
+    {% else %}<tr><td colspan="6" class="muted">No pending requests.</td></tr>{% endfor %}
+  </table>
+</div>
+<div class="card">
+  <h2>History</h2>
+  <table>
+    <tr><th>ID</th><th>User</th><th>Plan</th><th>Amount</th><th>Status</th><th>Note</th></tr>
+    {% for r in history %}
+    <tr><td>{{ r.id }}</td><td>{{ r.user.username }}</td><td>{{ r.plan_id }}</td>
+        <td>{{ r.amount }}</td>
+        <td><span class="badge {{ r.status.value }}">{{ r.status.value }}</span></td>
+        <td>{{ r.admin_note or "-" }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

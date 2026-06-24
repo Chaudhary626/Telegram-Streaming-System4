@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}My Panel{% endblock %}
+{% block nav %}{% include "panel/_nav.html" %}{% endblock %}
+{% block content %}
+<h1>Welcome, {{ user.username }}</h1>
+<div class="grid">
+  <div class="card"><div class="muted">Top-level content</div><div class="stat">{{ roots|length }}</div></div>
+  <div class="card"><div class="muted">Total videos</div><div class="stat">{{ total_videos }}</div></div>
+  <div class="card"><div class="muted">Plan</div>
+    <div class="stat" style="font-size:20px">{{ eff.name }}{% if eff.is_expired %} <span class="badge rejected">expired</span>{% endif %}</div>
+    <div class="muted">
+      {% if eff.unlimited %}Unlimited videos{% else %}{{ total_videos }}/{{ eff.max_videos }} videos used{% endif %}
+    </div>
+    <div class="muted">Expires: {{ eff.expires_at.strftime("%Y-%m-%d") if eff.expires_at else "-" }}</div>
+  </div>
+</div>
+{% if eff.is_expired %}
+<div class="card" style="border-color:#3a1418">
+  <strong>Your subscription has expired.</strong>
+  <span class="muted">You're now on the Free plan. <a href="/panel/plans">Renew &rarr;</a></span>
+</div>
+{% elif not eff.unlimited and total_videos >= eff.max_videos %}
+<div class="card" style="border-color:#3a2f12">
+  <strong>Video limit reached ({{ total_videos }}/{{ eff.max_videos }}).</strong>
+  <span class="muted">Upgrade to upload more. <a href="/panel/plans">View plans &rarr;</a></span>
+</div>
+{% endif %}
+<div class="card">
+  <h2>Your content</h2>
+  <p class="muted">Upload videos via the Telegram bot. Manage and link them here.</p>
+  <table>
+    <tr><th>Title</th><th>Type</th><th>Slug</th><th>Links</th></tr>
+    {% for c in roots %}
+    <tr><td><a href="/panel/content/{{ c.id }}">{{ c.title }}</a></td><td>{{ c.type.value }}</td>
+        <td>{{ c.slug }}</td>
+        <td><a href="{{ BASE_URL }}/watch/{{ c.slug }}" target="_blank">Watch</a> &middot;
+            <a href="{{ BASE_URL }}/embed/{{ c.slug }}" target="_blank">Embed</a></td></tr>
+    {% else %}<tr><td colspan="4" class="muted">No content yet. Use the bot's /new command.</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}

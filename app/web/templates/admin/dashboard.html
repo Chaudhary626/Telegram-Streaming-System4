@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block nav %}{% include "admin/_nav.html" %}{% endblock %}
+{% block content %}
+<h1>Dashboard</h1>
+<div class="grid">
+  <div class="card"><div class="muted">Total users</div><div class="stat">{{ stats.users }}</div></div>
+  <div class="card"><div class="muted">Subadmins</div><div class="stat">{{ stats.subadmins }}</div></div>
+  <div class="card"><div class="muted">Content items</div><div class="stat">{{ stats.contents }}</div></div>
+  <div class="card"><div class="muted">Video sources</div><div class="stat">{{ stats.videos }}</div></div>
+  <div class="card"><div class="muted">Pending payments</div><div class="stat">{{ pending_count }}</div>
+    <a href="{{ base }}/payments">Review &rarr;</a></div>
+</div>
+{% endblock %}

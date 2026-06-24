@@ -1,0 +1,10 @@
+.player-shell{max-width:980px;margin:0 auto;background:#000;border-radius:12px;overflow:hidden;box-shadow:0 10px 40px rgba(0,0,0,.5)}
+.player-shell.embed{max-width:none;border-radius:0;box-shadow:none}
+.video-wrap{position:relative;background:#000}
+.video-wrap video{display:block;width:100%;height:auto;background:#000;aspect-ratio:16/9}
+.controls{display:flex;gap:14px;align-items:center;padding:10px 14px;background:#11141f;color:#e6e9f2;font-family:system-ui,Segoe UI,Roboto,sans-serif;flex-wrap:wrap}
+.controls .title{font-weight:600;margin-right:auto;font-size:15px}
+.controls label{font-size:12px;color:#9aa3bd;margin-right:6px}
+.controls select{background:#0f1426;border:1px solid #2c3350;color:#e6e9f2;border-radius:8px;padding:6px 10px;font-size:13px}
+.empty{padding:40px;text-align:center;color:#9aa3bd;font-family:system-ui,sans-serif}
+body.embed-body{margin:0;background:#000}

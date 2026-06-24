@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Payment Methods{% endblock %}
+{% block nav %}{% include "admin/_nav.html" %}{% endblock %}
+{% block content %}
+<h1>Payment Methods</h1>
+<div class="card">
+  <h2>Add method</h2>
+  <form method="post" action="{{ base }}/methods/create" class="row">
+    <div><label>Name</label><input name="name" required></div>
+    <div><label>Type</label>
+      <select name="type">
+        <option>UPI</option><option>Bank</option><option>Razorpay</option>
+        <option>PayPal</option><option>Crypto</option><option>Custom</option>
+      </select></div>
+    <div style="flex:1"><label>Details</label><input name="details" placeholder="UPI id / link / address"></div>
+    <div style="flex:1"><label>Instructions</label><input name="instructions"></div>
+    <button class="btn" type="submit">Add</button>
+  </form>
+</div>
+<div class="card">
+  <table>
+    <tr><th>Name</th><th>Type</th><th>Details</th><th>Active</th><th></th></tr>
+    {% for m in methods %}
+    <tr><td>{{ m.name }}</td><td>{{ m.type }}</td><td>{{ m.details or "-" }}</td>
+        <td>{{ "Yes" if m.is_active else "No" }}</td>
+        <td><form class="inline" method="post" action="{{ base }}/methods/{{ m.id }}/toggle">
+          <button class="btn ghost" type="submit">Toggle</button></form></td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Subscription{% endblock %}
+{% block nav %}{% include "panel/_nav.html" %}{% endblock %}
+{% block content %}
+<h1>Subscription</h1>
+<div class="card">
+  <h2>Current plan: {{ eff.name }}{% if eff.is_expired %} <span class="badge rejected">expired</span>{% endif %}</h2>
+  <p class="muted">
+    {% if eff.unlimited %}Unlimited videos.{% else %}Video limit: {{ eff.max_videos }}.{% endif %}
+    Expires: {{ eff.expires_at.strftime("%Y-%m-%d") if eff.expires_at else "-" }}.
+  </p>
+</div>
+<div class="card">
+  <h2>Available plans</h2>
+  <div class="grid">
+    {% for p in plans %}
+    <div class="card">
+      <h2>{{ p.name }}</h2>
+      <div class="stat" style="font-size:22px">{{ p.price }}</div>
+      <div class="muted">{{ p.duration_days }} days &middot; {{ p.max_videos or "\u221e" }} videos</div>
+      <p class="muted">{{ p.features or "" }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+<div class="card">
+  <h2>Submit a payment</h2>
+  <p class="muted">Pay externally using a method below, then submit your transaction details for admin approval.</p>
+  <table>
+    <tr><th>Method</th><th>Type</th><th>Details</th><th>Instructions</th></tr>
+    {% for m in methods %}
+    <tr><td>{{ m.name }}</td><td>{{ m.type }}</td><td>{{ m.details or "-" }}</td><td>{{ m.instructions or "-" }}</td></tr>
+    {% else %}<tr><td colspan="4" class="muted">No payment methods configured.</td></tr>{% endfor %}
+  </table>
+  <form method="post" action="/panel/plans/buy" class="row" style="margin-top:14px">
+    <div><label>Plan</label><select name="plan_id" required>
+      {% for p in plans %}<option value="{{ p.id }}">{{ p.name }} ({{ p.price }})</option>{% endfor %}
+    </select></div>
+    <div><label>Method</label><select name="method_id">
+      <option value="">-</option>
+      {% for m in methods %}<option value="{{ m.id }}">{{ m.name }}</option>{% endfor %}
+    </select></div>
+    <div><label>Amount paid</label><input name="amount" type="number" value="0"></div>
+    <div style="flex:1"><label>Transaction / UTR ref</label><input name="transaction_ref"></div>
+    <button class="btn" type="submit">Submit for approval</button>
+  </form>
+</div>
+<div class="card">
+  <h2>My requests</h2>
+  <table>
+    <tr><th>ID</th><th>Plan</th><th>Amount</th><th>Status</th><th>Note</th></tr>
+    {% for r in requests %}
+    <tr><td>{{ r.id }}</td><td>{{ r.plan_id }}</td><td>{{ r.amount }}</td>
+        <td><span class="badge {{ r.status.value }}">{{ r.status.value }}</span></td>
+        <td>{{ r.admin_note or "-" }}</td></tr>
+    {% else %}<tr><td colspan="5" class="muted">No requests yet.</td></tr>{% endfor %}
+  </table>
+</div>
+{% endblock %}
